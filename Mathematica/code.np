@@ -1,0 +1,19 @@
+vdd = 3.3
+vth = 0.7
+k = (10^-4)*10
+(*fill the equation with the values you want*)
+vds[vx_] := vx 
+vgs[vx_] := 1.65
+ImOhmic[vx_] := 
+ k ((vgs - vth)*vds - (vds^2)/2) /. {vgs -> (1.65), vds -> (vx)}
+ImSat[vx_] := k/2 (vgs - vth)^2 /. {vgs -> (vdd - vx), vds -> (vx)}
+Ir[vx_] := (vdd - vx)*(20*10^3)
+
+ohmic = Solve[
+  ImOhmic[vx] == 
+    Ir[vx] && (vds[vx] < vgs[vx] - vth ) && (vgs[vx] > vth) && ( 
+    vds[vx] >= 0 && vds[vx] <= vdd ), vx]
+sat    = Solve[
+  ImSat[vx]     == 
+    Ir[vx] && (vds[vx] > vgs[vx] - vth ) && (vgs[vx] > 
+     vth) && (vds[vx] >= 0 && vds[vx] <= vdd) , vx]
